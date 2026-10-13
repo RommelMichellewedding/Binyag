@@ -480,6 +480,14 @@ html.locked, html.locked body { overflow: hidden; height: 100%; }
   var result = document.getElementById("result");
   var text = document.getElementById("result-text");
   var note = document.getElementById("copy-note");
+
+  // Paste your Google Apps Script Web app URL between the quotes to send RSVPs to your Google Sheet.
+  // While it is empty, the form only prepares a reply that guests can copy and message to you.
+  var SHEET_URL = "https://script.google.com/macros/s/AKfycbynHRkI0Lsg-GgTJi27meFg70YVJcRN6e2ZWIxE7EbYMPF0tP98Ywsz7weNtjAUqP6p/exec";
+  var sendBtn = form.querySelector("button[type=submit]");
+  var sendLabel = SHEET_URL ? "Send my RSVP" : "Prepare my reply";
+  sendBtn.textContent = sendLabel;
+
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var name = document.getElementById("guest-name").value.trim();
@@ -495,9 +503,37 @@ html.locked, html.locked body { overflow: hidden; height: 100%; }
     var out = "RSVP for R & M Wedding, December 27, 2026\n" + name + " " + att.toLowerCase() +
       (att.indexOf("Joyfully") === 0 ? " (" + count + (count === "1" ? " guest" : " guests") + ")" : "") + "." +
       (msg ? "\nMessage: " + msg : "");
-    text.textContent = out;
-    result.classList.add("on");
-    note.textContent = "Copy this reply and send it to the couple by message.";
+    var copyBtn = document.getElementById("copy-btn");
+    function showCopyMode(msgNote) {
+      text.textContent = out;
+      copyBtn.hidden = false;
+      note.textContent = msgNote;
+      result.classList.add("on");
+    }
+    if (!SHEET_URL) {
+      showCopyMode("Copy this reply and send it to the couple by message.");
+      return;
+    }
+    var body = new URLSearchParams({
+      name: name,
+      attendance: att,
+      guests: att.indexOf("Joyfully") === 0 ? count : "0",
+      message: msg
+    });
+    sendBtn.disabled = true;
+    sendBtn.textContent = "Sending...";
+    fetch(SHEET_URL, { method: "POST", mode: "no-cors", body: body }).then(function () {
+      text.textContent = "Thank you, " + name + ". Your reply has been sent to Rommel & Michelle.";
+      copyBtn.hidden = true;
+      note.textContent = "";
+      result.classList.add("on");
+      form.reset();
+    }, function () {
+      showCopyMode("We could not send your reply. Please copy it and message the couple.");
+    }).then(function () {
+      sendBtn.disabled = false;
+      sendBtn.textContent = sendLabel;
+    });
   });
   document.getElementById("copy-btn").addEventListener("click", function () {
     var t = text.textContent;
