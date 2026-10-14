@@ -328,7 +328,7 @@ window.INVITE = {
 <div class="intro" id="intro" hidden>
   <div class="intro-top">
     <span class="script">You are invited</span>
-    <span class="label">to the wedding of <span data-k="names">Rommel &amp; Michelle</span></span>
+    <span class="label">to the wedding of <span data-k="names">Michelle &amp; Rommel</span></span>
   </div>
   <button class="env-btn" id="env-btn" type="button" aria-label="Open the invitation">
     <span class="env-back"></span>
@@ -377,7 +377,7 @@ window.INVITE = {
       <div class="mono script" data-k="monogram">M &amp; R</div>
       <p class="label">Together<br>Always</p>
       <svg class="heart" aria-hidden="true"><use href="#heart"/></svg>
-      <h1 class="hero-names script" data-k="names">Rommel &amp; Michelle</h1>
+      <h1 class="hero-names script" data-k="names">Michelle &amp; Rommel</h1>
       <p class="hero-date">are getting married &middot; <span data-k="dateFull">Sunday, December 27, 2026</span></p>
     </div>
     <div class="floor"></div>
@@ -533,7 +533,7 @@ window.INVITE = {
   var ok = !isNaN(when.getTime());
   var V = {
     bride: C.brideName, groom: C.groomName,
-    names: C.groomName + " & " + C.brideName,
+    names: C.brideName + " & " + C.groomName,
     monogram: C.monogram, seal: String(C.monogram || "").replace(/\s+/g, ""),
     eyebrow: C.eyebrow, intro1: C.intro1, intro2: C.intro2,
     tagA: C.taglineA, tagB: C.taglineB, tagC: C.taglineC,
