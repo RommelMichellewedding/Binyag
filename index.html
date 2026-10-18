@@ -210,6 +210,9 @@ input[type=text], select, textarea {
 }
 select { appearance: none; padding-right: 42px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%23c9a45c' stroke-width='1.6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; }
 textarea { min-height: 96px; resize: vertical; }
+#count-wrap[hidden] { display: none; }
+.extra-names { display: grid; gap: 22px; }
+.extra-names:empty { display: none; }
 input::placeholder, textarea::placeholder { color: rgba(201, 173, 138, .6); }
 input[type=text]:focus, select:focus, textarea:focus { border-color: var(--gold-hi); box-shadow: 0 0 0 3px rgba(201, 164, 92, .22); }
 .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -664,6 +667,13 @@ window.INVITE = {
         <label for="guest-name">Your name</label>
         <input id="guest-name" type="text" placeholder="Full name" autocomplete="name">
       </div>
+      <div class="extra-names" id="extra-names"></div>
+      <div id="count-wrap">
+        <label for="guest-count">Number of guests</label>
+        <select id="guest-count">
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+        </select>
+      </div>
       <fieldset>
         <legend>Attendance</legend>
         <div class="choices">
@@ -671,12 +681,6 @@ window.INVITE = {
           <div><input type="radio" name="att" id="att-no" value="Regretfully declines"><label for="att-no">Regretfully decline</label></div>
         </div>
       </fieldset>
-      <div>
-        <label for="guest-count">Number of guests</label>
-        <select id="guest-count">
-          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-        </select>
-      </div>
       <div>
         <label for="guest-msg">Message for the couple</label>
         <textarea id="guest-msg" placeholder="Share a wish or note any dietary needs"></textarea>
@@ -999,6 +1003,24 @@ window.INVITE = {
   // Paste your Google Apps Script Web app URL between the quotes to send RSVPs to your Google Sheet.
   // While it is empty, the form only prepares a reply that guests can copy and message to you.
   var SHEET_URL = "https://script.google.com/macros/s/AKfycbynHRkI0Lsg-GgTJi27meFg70YVJcRN6e2ZWIxE7EbYMPF0tP98Ywsz7weNtjAUqP6p/exec";
+  var countSel = document.getElementById("guest-count"), countWrap = document.getElementById("count-wrap"), extra = document.getElementById("extra-names");
+  function renderNames() {
+    var n = parseInt(countSel.value, 10) || 1;
+    var attending = form.querySelector("input[name=att]:checked").value.indexOf("Joyfully") === 0;
+    countWrap.hidden = !attending;
+    var old = [].map.call(extra.querySelectorAll("input"), function (x) { return x.value; });
+    extra.innerHTML = "";
+    if (!attending) return;
+    for (var i = 2; i <= n; i++) {
+      var w = document.createElement("div"), l = document.createElement("label"), inp = document.createElement("input");
+      l.setAttribute("for", "guest-n" + i); l.textContent = "Guest " + i + " name";
+      inp.type = "text"; inp.id = "guest-n" + i; inp.placeholder = "Full name"; inp.autocomplete = "off"; inp.value = old[i - 2] || "";
+      w.appendChild(l); w.appendChild(inp); extra.appendChild(w);
+    }
+  }
+  countSel.addEventListener("change", renderNames);
+  [].forEach.call(form.querySelectorAll("input[name=att]"), function (r) { r.addEventListener("change", renderNames); });
+  renderNames();
   var sendBtn = form.querySelector("button[type=submit]");
   var sendLabel = SHEET_URL ? "Send my RSVP" : "Prepare my reply";
   sendBtn.textContent = sendLabel;
@@ -1015,8 +1037,18 @@ window.INVITE = {
     var att = form.querySelector("input[name=att]:checked").value;
     var count = document.getElementById("guest-count").value;
     var msg = document.getElementById("guest-msg").value.trim();
+    var attending = att.indexOf("Joyfully") === 0, names = [name];
+    if (attending) {
+      var boxes = extra.querySelectorAll("input");
+      for (var b = 0; b < boxes.length; b++) {
+        var nv = boxes[b].value.trim();
+        if (!nv) { boxes[b].focus(); boxes[b].placeholder = "Please enter this name"; return; }
+        names.push(nv);
+      }
+    }
     var out = "RSVP for " + (V.monogram || "") + " Wedding, " + (V.dateLong || "") + "\n" + name + " " + att.toLowerCase() +
       (att.indexOf("Joyfully") === 0 ? " (" + count + (count === "1" ? " guest" : " guests") + ")" : "") + "." +
+      (attending && names.length > 1 ? "\nGuests: " + names.join(", ") : "") +
       (msg ? "\nMessage: " + msg : "");
     var copyBtn = document.getElementById("copy-btn");
     function showCopyMode(msgNote) {
@@ -1033,6 +1065,7 @@ window.INVITE = {
       name: name,
       attendance: att,
       guests: att.indexOf("Joyfully") === 0 ? count : "0",
+      guestNames: attending ? names.join(", ") : "",
       message: msg
     });
     sendBtn.disabled = true;
@@ -1042,7 +1075,7 @@ window.INVITE = {
       copyBtn.hidden = true;
       note.textContent = "";
       result.classList.add("on");
-      form.reset();
+      form.reset(); renderNames();
     }, function () {
       showCopyMode("We could not send your reply. Please copy it and message the couple.");
     }).then(function () {
