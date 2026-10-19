@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Elijah's Baptism</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Jost:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Marcellus&display=swap">
+<style>
+/* Layout: one scrolling invitation site. Sky-blue hero with clouds, then Program, Venue, Godparents, Dress code, RSVP. */
+:root {
+  --bg: #F3F7FA;
+  --bg2: #E6EFF6;
+  --surface: #FFFFFF;
+  --fg: #1F3A56;
+  --muted: #4A6580;
+  --gold: #B8924A;
+  --gold-text: #7F5F22;
+  --blue: #8FB0CC;
+  --accent: #1F3A56;
+  --on-accent: #FFFFFF;
+  --cloud1: #DCE8F1;
+  --cloud2: #C6DAEA;
+  --display: 'Marcellus', Georgia, serif;
+  --script: 'Great Vibes', 'Brush Script MT', cursive;
+  --body: 'Jost', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1F33; --bg2: #14283F; --surface: #1A3350; --fg: #EAF1F7; --muted: #A9BDD0;
+    --gold: #C9A55C; --gold-text: #E3C98E; --blue: #5C87AB; --accent: #E3C98E; --on-accent: #0F1F33;
+    --cloud1: #17304B; --cloud2: #1E3D5E; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1F33; --bg2: #14283F; --surface: #1A3350; --fg: #EAF1F7; --muted: #A9BDD0;
+  --gold: #C9A55C; --gold-text: #E3C98E; --blue: #5C87AB; --accent: #E3C98E; --on-accent: #0F1F33;
+  --cloud1: #17304B; --cloud2: #1E3D5E; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 17px; line-height: 1.6; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3 { text-wrap: balance; font-weight: 400; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--gold-text); outline-offset: 3px; }
+
+.wrap { max-width: 880px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.eyebrow { font-size: 12px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold-text); font-weight: 500; }
+.h2 { font-family: var(--display); font-size: clamp(26px, 5vw, 36px); letter-spacing: 0.12em; text-transform: uppercase; }
+.script { font-family: var(--script); line-height: 1.1; }
+.muted { color: var(--muted); }
+
+/* nav */
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: var(--bg); border-bottom: 1px solid var(--gold); }
+.nav .wrap { max-width: none; display: flex; align-items: center; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; padding-top: 10px; padding-bottom: 10px; padding-left: max(clamp(16px, 3vw, 40px), env(safe-area-inset-left, 0px)); padding-right: max(clamp(16px, 3vw, 40px), env(safe-area-inset-right, 0px)); }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); letter-spacing: 0.08em; text-decoration: none; }
+.brand svg { width: 28px; height: 26px; }
+.links { display: flex; gap: 4px 20px; flex-wrap: wrap; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; }
+.links a { text-decoration: none; color: var(--muted); padding: 6px 0; }
+.links a:hover { color: var(--fg); }
+
+/* hero */
+.hero { position: relative; overflow: hidden; background: var(--bg); text-align: center; }
+.hero .wrap { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 22px; padding-top: 64px; padding-bottom: 170px; }
+.hero .mark { width: 76px; height: 68px; }
+.hero h1 { font-family: var(--display); font-size: clamp(26px, 6vw, 40px); letter-spacing: 0.2em; }
+.hero .name { font-size: clamp(60px, 16vw, 132px); color: var(--fg); overflow-wrap: anywhere; }
+.parents { display: flex; flex-direction: column; gap: 2px; }
+.parents strong { font-weight: 500; font-size: 20px; letter-spacing: 0.03em; }
+.rule { display: flex; align-items: center; gap: 12px; }
+.rule i { display: block; width: clamp(40px, 12vw, 90px); height: 1px; background: var(--gold); }
+.rule svg { width: 14px; height: 18px; fill: var(--gold); }
+.when { font-family: var(--display); font-size: clamp(22px, 4.6vw, 32px); letter-spacing: 0.05em; }
+.stars span { position: absolute; width: 14px; height: 14px; fill: var(--gold); opacity: 0.65; animation: twinkle 4s ease-in-out infinite; }
+.clouds { position: absolute; left: 0; right: 0; bottom: 0; height: 150px; z-index: 0; }
+.clouds svg { position: absolute; left: 0; bottom: 0; width: 100%; height: 100%; }
+
+.count { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; width: min(100%, 420px); }
+.count div { background: var(--surface); border: 1px solid var(--blue); padding: 12px 4px 10px; display: flex; flex-direction: column; align-items: center; }
+.count b { font-family: var(--display); font-weight: 400; font-size: clamp(26px, 7vw, 38px); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.count small { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+.count-msg { font-style: italic; color: var(--gold-text); }
+
+/* sections */
+.band { padding-top: 84px; padding-bottom: 84px; }
+.band.alt { background: var(--bg2); }
+.head { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; margin-bottom: 44px; }
+.head .script { font-size: clamp(40px, 8vw, 58px); }
+
+.timeline { list-style: none; margin: 0 auto; padding: 0; max-width: 620px; }
+.timeline li { display: grid; grid-template-columns: minmax(84px, 120px) 22px minmax(0, 1fr); column-gap: 14px; }
+.timeline time { font-family: var(--display); font-size: 19px; color: var(--gold-text); text-align: right; padding-top: 1px; }
+.timeline .dot { display: flex; flex-direction: column; align-items: center; }
+.timeline .dot::before { content: ""; width: 12px; height: 12px; margin-top: 7px; border-radius: 50%; border: 2px solid var(--gold); background: var(--bg2); }
+.timeline li:nth-child(2) .dot::before { background: var(--gold); }
+.timeline .dot::after { content: ""; flex: 1; width: 1px; background: var(--gold); opacity: 0.5; }
+.timeline li:last-child .dot::after { display: none; }
+.timeline li > div:last-child { padding-bottom: 26px; }
+.timeline h3 { font-size: 19px; font-weight: 500; }
+.timeline p { color: var(--muted); font-size: 15px; }
+
+.places { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 22px; }
+.place { background: var(--surface); border: 1px solid var(--blue); padding: 26px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.place h3 { font-family: var(--display); font-size: 23px; }
+.place .map { margin-top: 8px; min-height: 130px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 14px; background: var(--bg2); border: 1px dashed var(--blue); color: var(--muted); font-size: 14px; }
+
+.gods { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 30px; max-width: 640px; margin: 0 auto; text-align: center; }
+.gods h3 { font-size: 13px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold-text); font-weight: 500; padding-bottom: 8px; border-bottom: 1px solid var(--gold); margin-bottom: 14px; }
+.gods ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 18px; }
+
+.dress { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 36px 48px; }
+.swatches { display: flex; gap: 10px; margin: 14px 0; }
+.swatches i { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--blue); display: block; }
+.dress h3 { font-family: var(--display); font-size: 22px; letter-spacing: 0.06em; }
+.notes { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 0; }
+.notes li { padding: 11px 0; border-top: 1px solid var(--blue); color: var(--muted); font-size: 16px; }
+.notes li:last-child { border-bottom: 1px solid var(--blue); }
+
+.rsvp { background: var(--surface); border: 1px solid var(--gold); padding: clamp(20px, 5vw, 44px); max-width: 640px; margin: 0 auto; }
+.rsvp p.lead { text-align: center; margin-bottom: 26px; color: var(--muted); }
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; min-width: 0; }
+.field label, .field legend { font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-text); font-weight: 500; padding: 0; }
+fieldset.field { border: 0; margin: 0 0 18px; padding: 0; }
+input[type=text], select, textarea { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--blue); padding: 12px 14px; width: 100%; min-height: 46px; border-radius: 0; }
+textarea { resize: vertical; min-height: 90px; }
+.choices { display: flex; gap: 10px; flex-wrap: wrap; }
+.choices label { text-transform: none; letter-spacing: 0; font-size: 16px; color: var(--fg); font-weight: 400; display: flex; align-items: center; gap: 8px; border: 1px solid var(--blue); padding: 11px 16px; cursor: pointer; flex: 1 1 180px; min-height: 46px; }
+.choices input { accent-color: var(--gold-text); width: 18px; height: 18px; margin: 0; }
+.btn { font: inherit; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; font-size: 14px; background: var(--accent); color: var(--on-accent); border: 0; padding: 14px 26px; min-height: 48px; cursor: pointer; width: 100%; }
+.btn:hover { opacity: 0.9; }
+.btn.ghost { background: transparent; color: var(--fg); border: 1px solid var(--fg); width: auto; flex: 1 1 160px; }
+.result { margin-top: 26px; padding-top: 24px; border-top: 1px solid var(--gold); display: flex; flex-direction: column; gap: 12px; }
+.result textarea { min-height: 120px; }
+.result .row { display: flex; gap: 10px; flex-wrap: wrap; }
+.status { font-size: 15px; color: var(--gold-text); min-height: 1.4em; }
+.contact { text-align: center; margin-top: 22px; font-size: 15px; color: var(--muted); }
+
+footer { background: var(--bg2); text-align: center; padding-top: 72px; padding-bottom: 60px; }
+footer .wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+footer .script { font-size: clamp(48px, 10vw, 72px); }
+
+@keyframes twinkle { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.8; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .stars span { animation: none; }
+}
+@media (max-width: 520px) {
+  .band { padding-top: 64px; padding-bottom: 64px; }
+  .timeline li { grid-template-columns: 76px 20px minmax(0, 1fr); column-gap: 10px; }
+  .timeline time { font-size: 16px; }
+}
+[hidden]{display:none!important}
+body{margin:0}
+img{max-width:100%}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="shell" viewBox="0 0 100 90">
+      <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" transform="translate(50 74)">
+        <ellipse cx="0" cy="-28" rx="9" ry="28" transform="rotate(-50)"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="28" transform="rotate(-33)"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="28" transform="rotate(-17)"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="28"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="28" transform="rotate(17)"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="28" transform="rotate(33)"/>
+        <ellipse cx="0" cy="-28" rx="9" ry="28" transform="rotate(50)"/>
+        <path d="M-14 6 Q0 15 14 6"/>
+      </g>
+    </symbol>
+    <symbol id="drop" viewBox="-8 -11 16 20"><path d="M0 -10 C6 -2 8 2 8 5 A8 8 0 0 1 -8 5 C-8 2 -6 -2 0 -10Z"/></symbol>
+    <symbol id="star" viewBox="-10 -10 20 20"><path d="M0 -9 L2 -2 L9 0 L2 2 L0 9 L-2 2 L-9 0 L-2 -2Z"/></symbol>
+  </defs>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#date"><svg style="color: var(--gold)" aria-hidden="true"><use href="#shell"/></svg><span>Elijah's Baptism</span></a>
+    <nav class="links" aria-label="Sections">
+      <a href="#program">Program</a>
+      <a href="#venue">Venue</a>
+      <a href="#godparents">Godparents</a>
+      <a href="#rsvp">RSVP</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="date">
+  <div class="stars" aria-hidden="true">
+    <span style="left: 8%; top: 70px"><svg width="14" height="14"><use href="#star"/></svg></span>
+    <span style="right: 10%; top: 54px; animation-delay: 1.2s"><svg width="14" height="14"><use href="#star"/></svg></span>
+    <span style="right: 18%; top: 250px; animation-delay: 2.4s"><svg width="14" height="14"><use href="#star"/></svg></span>
+    <span style="left: 14%; top: 330px; animation-delay: 0.6s"><svg width="14" height="14"><use href="#star"/></svg></span>
+    <span style="left: 5%; top: 520px; animation-delay: 1.8s"><svg width="14" height="14"><use href="#star"/></svg></span>
+  </div>
+  <div class="wrap">
+    <svg class="mark" style="color: var(--gold)" aria-hidden="true"><use href="#shell"/></svg>
+    <div>
+      <p class="eyebrow">By the grace of God</p>
+      <p class="muted" style="font-style: italic; font-weight: 300; font-size: 19px; margin-top: 4px">You are warmly invited to the baptism of</p>
+    </div>
+    <h1>BAPTISM</h1>
+    <p class="script name">Elijah Gabriel</p>
+    <p class="parents"><span class="muted" style="font-style: italic; font-weight: 300">son of</span><strong>Daniel and Maria Reyes</strong></p>
+    <div class="rule" aria-hidden="true"><i></i><svg><use href="#drop"/></svg><i></i></div>
+    <div>
+      <p class="eyebrow">The Day</p>
+      <p class="when" id="event-date" style="margin-top: 6px">Saturday, December 12, 2026</p>
+      <p style="letter-spacing: 0.08em; margin-top: 2px">at 10:00 in the morning</p>
+    </div>
+    <div class="count" id="countdown" data-target="2026-12-12T10:00:00+08:00" role="timer" aria-label="Time remaining until the baptism">
+      <div><b id="cd-d">00</b><small>Days</small></div>
+      <div><b id="cd-h">00</b><small>Hours</small></div>
+      <div><b id="cd-m">00</b><small>Minutes</small></div>
+      <div><b id="cd-s">00</b><small>Seconds</small></div>
+    </div>
+    <p class="count-msg" id="count-msg" hidden>The big day is here. Thank you for celebrating with us!</p>
+  </div>
+  <div class="clouds" aria-hidden="true">
+    <svg viewBox="0 0 1200 150" preserveAspectRatio="none">
+      <g fill="var(--cloud1)">
+        <circle cx="60" cy="120" r="60"/><circle cx="210" cy="100" r="75"/><circle cx="380" cy="125" r="62"/><circle cx="540" cy="98" r="80"/><circle cx="720" cy="122" r="66"/><circle cx="890" cy="100" r="78"/><circle cx="1050" cy="124" r="64"/><circle cx="1180" cy="104" r="70"/><rect x="0" y="118" width="1200" height="32"/>
+      </g>
+      <g fill="var(--cloud2)">
+        <circle cx="0" cy="156" r="54"/><circle cx="150" cy="160" r="56"/><circle cx="300" cy="152" r="50"/><circle cx="460" cy="162" r="58"/><circle cx="620" cy="154" r="52"/><circle cx="780" cy="162" r="58"/><circle cx="940" cy="154" r="52"/><circle cx="1100" cy="162" r="58"/><circle cx="1200" cy="154" r="52"/>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section class="band alt" id="program">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Program of the Day</p>
+      <h2 class="script">Our Celebration</h2>
+    </div>
+    <ol class="timeline">
+      <li><time>9:00 AM</time><div class="dot" aria-hidden="true"></div><div><h3>Guests arrive</h3><p>Greetings and seating at the church.</p></div></li>
+      <li><time>10:00 AM</time><div class="dot" aria-hidden="true"></div><div><h3>Baptism ceremony</h3><p>Elijah is welcomed into the faith.</p></div></li>
+      <li><time>11:30 AM</time><div class="dot" aria-hidden="true"></div><div><h3>Photos</h3><p>With family and godparents.</p></div></li>
+      <li><time>12:00 PM</time><div class="dot" aria-hidden="true"></div><div><h3>Lunch and thanksgiving</h3><p>A blessing of the table, then lunch together.</p></div></li>
+      <li><time>2:00 PM</time><div class="dot" aria-hidden="true"></div><div><h3>Games, cake and keepsakes</h3><p>Guests head home with a small thank-you.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<section class="band" id="venue">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Where We Will Meet</p>
+      <h2 class="script">The Venue</h2>
+    </div>
+    <div class="places">
+      <article class="place">
+        <p class="eyebrow">Ceremony</p>
+        <h3>[Church Name]</h3>
+        <p class="muted">[Full church address]</p>
+        <p class="muted" style="font-size: 15px">[Parking note or landmark]</p>
+        <div class="map">[Map or directions go here]</div>
+      </article>
+      <article class="place">
+        <p class="eyebrow">Reception</p>
+        <h3>[Reception Venue Name]</h3>
+        <p class="muted">[Full address]</p>
+        <p class="muted" style="font-size: 15px">[Parking note or landmark]</p>
+        <div class="map">[Map or directions go here]</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="godparents">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Elijah's Guides</p>
+      <h2 class="script">Godparents</h2>
+    </div>
+    <div class="gods">
+      <div>
+        <h3>Godfathers</h3>
+        <ul><li>Marco Villanueva</li><li>Paolo Mendoza</li><li>Joshua Dela Cruz</li><li>Ramon Bautista</li></ul>
+      </div>
+      <div>
+        <h3>Godmothers</h3>
+        <ul><li>Angela Santos</li><li>Camille Navarro</li><li>Bianca Ramos</li><li>Teresa Aquino</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">For All Guests</p>
+      <h2 class="script">Dress Code and Reminders</h2>
+    </div>
+    <div class="dress">
+      <div>
+        <h3>Colors of the day</h3>
+        <div class="swatches" aria-hidden="true">
+          <i style="background: #FFFFFF"></i><i style="background: #BBD3E6"></i><i style="background: #1F3A56"></i>
+        </div>
+        <p class="muted">White, light blue or navy suit the day. Formal or smart casual is perfect.</p>
+      </div>
+      <div>
+        <h3>Reminders</h3>
+        <ul class="notes">
+          <li>Please arrive 30 minutes before the ceremony.</li>
+          <li>Kindly silence your phone during the service.</li>
+          <li>Your presence and prayers are the best gift.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="rsvp">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Kindly Reply</p>
+      <h2 class="script">RSVP</h2>
+    </div>
+    <div class="rsvp">
+      <p class="lead">Please reply by December 1. Fill this in and it will write a message you can send to Maria.</p>
+      <form id="rsvp-form" data-child="Elijah" novalidate>
+        <div class="field">
+          <label for="rsvp-name">Your name</label>
+          <input type="text" id="rsvp-name" autocomplete="name" placeholder="e.g. Anna Cruz">
+        </div>
+        <fieldset class="field">
+          <legend>Will you attend?</legend>
+          <div class="choices">
+            <label for="rsvp-yes"><input type="radio" name="attend" id="rsvp-yes" value="yes" checked> Yes, we will be there</label>
+            <label for="rsvp-no"><input type="radio" name="attend" id="rsvp-no" value="no"> Sorry, we can't make it</label>
+          </div>
+        </fieldset>
+        <div class="field" id="guests-field">
+          <label for="rsvp-guests">How many will attend</label>
+          <select id="rsvp-guests">
+            <option value="1">1 guest</option><option value="2" selected>2 guests</option><option value="3">3 guests</option><option value="4">4 guests</option><option value="5">5 guests</option><option value="6">6 guests</option><option value="7">7 guests</option><option value="8">8 guests</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="rsvp-note">A message for Elijah (optional)</label>
+          <textarea id="rsvp-note" placeholder="A greeting or a prayer for the family"></textarea>
+        </div>
+        <button class="btn" type="submit">Write my reply</button>
+      </form>
+      <div class="result" id="rsvp-result" hidden>
+        <label class="eyebrow" for="rsvp-out">Your message</label>
+        <textarea id="rsvp-out" readonly></textarea>
+        <div class="row">
+          <button class="btn ghost" type="button" id="copy-btn">Copy message</button>
+          <a class="btn ghost" id="sms-link" href="sms:" style="display: flex; align-items: center; justify-content: center; text-decoration: none">Open in Messages</a>
+        </div>
+        <p class="status" id="copy-status" role="status"></p>
+        <p class="muted" style="font-size: 15px">Your reply has not been sent yet. Send it to Maria yourself by text or Messenger.</p>
+      </div>
+      <p class="contact">Prefer to call? <strong style="color: var(--fg); font-weight: 500">Maria Reyes</strong> · <span id="contact-number" style="color: var(--fg); font-weight: 500">[0900 000 0000]</span></p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <svg width="46" height="42" style="color: var(--gold)" aria-hidden="true"><use href="#shell"/></svg>
+    <p class="script">Thank you</p>
+    <p class="muted" style="max-width: 460px">Your love and prayers are the best gift as Elijah begins his life of faith.</p>
+    <p class="eyebrow" style="margin-top: 8px">God bless you and your family</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var box = document.getElementById('countdown');
+  var msg = document.getElementById('count-msg');
+  var target = new Date(box.getAttribute('data-target')).getTime();
+  var d = document.getElementById('cd-d'), h = document.getElementById('cd-h'), m = document.getElementById('cd-m'), s = document.getElementById('cd-s');
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function tick() {
+    var diff = target - Date.now();
+    if (isNaN(diff)) { return; }
+    if (diff <= 0) { box.hidden = true; msg.hidden = false; return; }
+    var sec = Math.floor(diff / 1000);
+    d.textContent = pad(Math.floor(sec / 86400));
+    h.textContent = pad(Math.floor(sec % 86400 / 3600));
+    m.textContent = pad(Math.floor(sec % 3600 / 60));
+    s.textContent = pad(sec % 60);
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  var form = document.getElementById('rsvp-form');
+  var result = document.getElementById('rsvp-result');
+  var out = document.getElementById('rsvp-out');
+  var status = document.getElementById('copy-status');
+  var guestsField = document.getElementById('guests-field');
+  var yes = document.getElementById('rsvp-yes'), no = document.getElementById('rsvp-no');
+
+  function syncGuests() { guestsField.hidden = no.checked; }
+  yes.addEventListener('change', syncGuests);
+  no.addEventListener('change', syncGuests);
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var nameInput = document.getElementById('rsvp-name');
+    var name = nameInput.value.trim();
+    if (!name) {
+      nameInput.focus();
+      status.textContent = '';
+      result.hidden = true;
+      nameInput.setAttribute('aria-invalid', 'true');
+      nameInput.placeholder = 'Please enter your name';
+      return;
+    }
+    nameInput.removeAttribute('aria-invalid');
+    var child = form.getAttribute('data-child');
+    var date = document.getElementById('event-date').textContent;
+    var note = document.getElementById('rsvp-note').value.trim();
+    var text = 'Hello! This is ' + name + '. ';
+    if (yes.checked) {
+      var n = document.getElementById('rsvp-guests').value;
+      text += 'We will be attending ' + child + '’s baptism on ' + date + ' (' + n + (n === '1' ? ' guest' : ' guests') + ').';
+    } else {
+      text += 'Sorry, we won’t be able to attend ' + child + '’s baptism on ' + date + ', but you are all in our prayers.';
+    }
+    if (note) { text += ' ' + note; }
+    out.value = text;
+    var num = document.getElementById('contact-number').textContent.replace(/[^0-9+]/g, '');
+    document.getElementById('sms-link').setAttribute('href', 'sms:' + num + '?body=' + encodeURIComponent(text));
+    result.hidden = false;
+    status.textContent = '';
+  });
+
+  document.getElementById('copy-btn').addEventListener('click', function () {
+    function fallback() {
+      out.focus(); out.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+      status.textContent = ok ? 'Message copied.' : 'Select the message and copy it.';
+    }
+    try {
+      navigator.clipboard.writeText(out.value).then(function () {
+        status.textContent = 'Message copied.';
+      }, fallback);
+    } catch (err) { fallback(); }
+  });
+})();
+</script>
+
+</body>
+</html>
